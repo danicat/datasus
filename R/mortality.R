@@ -48,20 +48,62 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
                 df$state <- sel_states[i]
                 mort <- rbind(df, mort, make.row.names = FALSE)
         }
-        mort %>% rename(dd_num     = NUMERODO,  # Declaration of Death #
-                        type       = TIPOBITO,  # Type of death 1 = fetal / 2 = non fetal
-                        date       = DTOBITO,
-                        time       = HORAOBITO,
-                        birthplace = NATURAL,
-                        birthdate  = DTNASC,
-                        age        = IDADE,
-                        sex        = SEXO,
-                        race       = RACACOR,
-                        marital.status = ESTCIV,
-                        education      = ESC,
-                        profession     = OCUP,
-                        cause.of.death = CAUSABAS # By CID-10
-                        ) %>%
-                select(dd_num, type, date, time, birthplace, birthdate, age, sex, 
-                       race, marital.status, education, profession, cause.of.death)
+        mort %>% rename(dec.death.id      = NUMERODO,  # Declaration of Death #
+                        type              = TIPOBITO,  # Type of death 1 = fetal / 2 = non fetal
+                        date              = DTOBITO,   # ddmmyyyy
+                        time              = HORAOBITO, # hhmm
+                        birthplace        = NATURAL,   # country code or the number 8 followed by state code if local
+                        birthdate         = DTNASC,    # ddmmyyyy
+                        age               = IDADE,     # first digit: age type
+                        sex               = SEXO,
+                        race              = RACACOR,
+                        marital.status    = ESTCIV,
+                        education         = ESC,
+                        occupation        = OCUP,
+                        county.res.id     = CODMUNRES, # county of residency
+                        #nb.res.id         = CODBAIRES, # neighborhood of residency
+                        local.of.death    = LOCOCOR,
+                        facility.id       = CODESTAB,  # establishment of death
+                        cty.death.id      = CODMUNOCOR, # county where he/she died
+                        #nb.death.id       = CODBAIOCOR, # neighborhood where he/she died
+                        # Fields below only filled when fetal death or < than 1 year old
+                        age.mother        = IDADEMAE, # age of the mother
+                        educ.mother       = ESCMAE, # education of the mother
+                        occup.mother      = OCUPMAE,
+                        num.chld.alive   = QTDFILVIVO,
+                        num.chld.dead    = QTDFILMORT,
+                        pregnancy         = GRAVIDEZ,
+                        gestation         = GESTACAO,
+                        child.birth       = PARTO,
+                        childbirth.time = OBITOPARTO, # Timing of death in relation to child-birth
+                        weight            = PESO,
+                        birth.cert.id     = NUMERODN, # birth certificate #
+                        pregnancy.death   = OBITOGRAV,
+                        puerperium.death  = OBITOPUERP,
+                        med.assist        = ASSISTMED,
+                        comp.exams        = EXAME,
+                        surgery           = CIRURGIA,
+                        necropsy          = NECROPSIA,
+                        line.a            = LINHAA,
+                        line.b            = LINHAB,
+                        line.c            = LINHAC,
+                        line.d            = LINHAD,
+                        line.II           = LINHAII,
+                        cause.of.death    = CAUSABAS, # By CID-10
+                        #signature.type    = TPASSINA,
+                        certificate.date  = DTATESTADO,
+                        accident.type     = CIRCOBITO,
+                        work.accident     = ACIDTRAB,
+                        source            = FONTE,
+                        investigated      = TPPOS,
+                        investig.date     = DTINVESTIG,
+                        orig.cause        = CAUSABAS_O,
+                        input.date        = DTCADASTRO,
+                        cert.officer      = ATESTANTE,
+                        investig.source   = FONTEINV,
+                        receipt.date      = DTRECEBIM,
+                        #registry.state    = UFINFORM,
+                        inst.code         = CODINST
+                        #cause.death.pre   = CB_PRE
+                        )
 }

@@ -8,9 +8,15 @@ License: GPLv3
 
 This project is a collection of R scripts to create an interface to the Public Healthcare Data repositories made available by the Brazil's Ministry of Health. The government agency responsible for publishing this data is called [DATASUS](http://datasus.saude.gov.br/), hence the name of the collection.
 
-This project  current status is **Work in Progress (WIP)**. This means it is far from complete and, for now at least, I can't guarantee that the most recent commit is not broken. I know it's not a best practice to commit non-working code, but it is a worst practice to lose all your work because you didn't commit, so... :)
+My motivation for this project is pretty much summarized by this article: http://simplystatistics.org/2016/04/20/data-repositories/
+
+This project's current status is **Work in Progress (WIP)**. This means it is far from complete and, for now at least, I can't guarantee that the most recent commit is not broken. I know it's not a best practice to commit non-working code, but it is a worst practice to lose all your work because you didn't commit, so... :)
 
 If you have any questions, suggestions and improvement requests, please feel free to contact me and I'll do my best to reply. But please, don't submit bug reports (yet). As far as I know this project **IS** a bug.
+
+# Code Book
+
+See [CodeBook.md](/inst/CodeBook.md)
 
 # Demo
 
