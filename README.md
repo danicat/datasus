@@ -10,7 +10,7 @@ This project is a collection of R scripts to create an interface to the Public H
 
 My motivation for this project is pretty much summarized by this article: http://simplystatistics.org/2016/04/20/data-repositories/
 
-This project's current status is **Work in Progress (WIP)**. If you have any questions, suggestions and improvement requests, please feel free to contact me and I'll do my best to reply. But please, don't submit bug reports (yet). As far as I know this project **IS** a bug.
+This project's current status is **Work in Progress (WIP)**. If you have any questions, suggestions and improvement requests, please feel free to contact me and I'll do my best to reply.
 
 ## Code Book
 
