@@ -3,6 +3,7 @@
 # Daniela Petruzalek <daniela.petruzalek@gmail.com>
 # Jun, 3 2016
 
+# This function downloads the required data set (if not on cache dir) and 
 datasus.mortality <- function(year, type = "DO", states = "ALL") {
         # Current version not prepared to handle several years at a time
         if( length(year) > 1 ) {
@@ -10,9 +11,11 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
                 stop()                
         }
         
+        suppressWarnings(
         if( states != "ALL" & type != "DO" ) {
                 warning("Parameter 'states' ignored: valid only for 'DO' type.")
         }
+        )
         
         all_states <- datasus.states() %>% select(state)
         
@@ -94,66 +97,69 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
                 
                 # This column is used as an indicator of which file originated the data
                 df$dataset <- file.name[i]
-                
+
+                # Translate variable names to English
+                # See CodeBook.md for variable descriptions and values
+                df <- rename(df, dec.death.id     = NUMERODO,
+                                type              = TIPOBITO,
+                                date              = DTOBITO,
+                                time              = HORAOBITO,
+                                birthplace        = NATURAL,
+                                birthdate         = DTNASC,
+                                age               = IDADE,
+                                sex               = SEXO,
+                                race              = RACACOR,
+                                marital.status    = ESTCIV,
+                                education         = ESC,
+                                occupation        = OCUP,
+                                county.res.id     = CODMUNRES,
+                                #nb.res.id         = CODBAIRES,
+                                local.of.death    = LOCOCOR,
+                                facility.id       = CODESTAB,
+                                cty.death.id      = CODMUNOCOR,
+                                age.mother        = IDADEMAE,
+                                educ.mother       = ESCMAE,
+                                occup.mother      = OCUPMAE,
+                                num.chld.alive    = QTDFILVIVO,
+                                num.chld.dead     = QTDFILMORT,
+                                pregnancy         = GRAVIDEZ,
+                                gestation         = GESTACAO,
+                                child.birth       = PARTO,
+                                childbirth.time   = OBITOPARTO,
+                                weight            = PESO,
+                                birth.cert.id     = NUMERODN,
+                                pregnancy.death   = OBITOGRAV,
+                                puerperium.death  = OBITOPUERP,
+                                med.assist        = ASSISTMED,
+                                comp.exams        = EXAME,
+                                surgery           = CIRURGIA,
+                                necropsy          = NECROPSIA,
+                                line.a            = LINHAA,
+                                line.b            = LINHAB,
+                                line.c            = LINHAC,
+                                line.d            = LINHAD,
+                                line.ii           = LINHAII,
+                                cause.of.death    = CAUSABAS,
+                                certificate.date  = DTATESTADO,
+                                accident.type     = CIRCOBITO,
+                                work.accident     = ACIDTRAB,
+                                source            = FONTE,
+                                investigated      = TPPOS,
+                                investig.date     = DTINVESTIG,
+                                orig.cause        = CAUSABAS_O,
+                                input.date        = DTCADASTRO,
+                                cert.officer      = ATESTANTE,
+                                investig.source   = FONTEINV,
+                                receipt.date      = DTRECEBIM,
+                                inst.code         = CODINST
+                ) %>% 
+                # Select only those names that were translated (see CodeBook.md for more info)
+                # This filter is done before rbind because fields are not consistent within files
+                select(-matches("[A-Z]+", ignore.case = FALSE))
+
                 mort <- rbind(df, mort, make.row.names = FALSE)
         }
         
-        # Translate variable names to English
-        # See CodeBook.md for variable descriptions and values
-        mort %>% rename(dec.death.id      = NUMERODO,
-                        type              = TIPOBITO,
-                        date              = DTOBITO,
-                        time              = HORAOBITO,
-                        birthplace        = NATURAL,
-                        birthdate         = DTNASC,
-                        age               = IDADE,
-                        sex               = SEXO,
-                        race              = RACACOR,
-                        marital.status    = ESTCIV,
-                        education         = ESC,
-                        occupation        = OCUP,
-                        county.res.id     = CODMUNRES,
-                        #nb.res.id         = CODBAIRES,
-                        local.of.death    = LOCOCOR,
-                        facility.id       = CODESTAB,
-                        cty.death.id      = CODMUNOCOR,
-                        age.mother        = IDADEMAE,
-                        educ.mother       = ESCMAE,
-                        occup.mother      = OCUPMAE,
-                        num.chld.alive    = QTDFILVIVO,
-                        num.chld.dead     = QTDFILMORT,
-                        pregnancy         = GRAVIDEZ,
-                        gestation         = GESTACAO,
-                        child.birth       = PARTO,
-                        childbirth.time   = OBITOPARTO,
-                        weight            = PESO,
-                        birth.cert.id     = NUMERODN,
-                        pregnancy.death   = OBITOGRAV,
-                        puerperium.death  = OBITOPUERP,
-                        med.assist        = ASSISTMED,
-                        comp.exams        = EXAME,
-                        surgery           = CIRURGIA,
-                        necropsy          = NECROPSIA,
-                        line.a            = LINHAA,
-                        line.b            = LINHAB,
-                        line.c            = LINHAC,
-                        line.d            = LINHAD,
-                        line.ii           = LINHAII,
-                        cause.of.death    = CAUSABAS,
-                        certificate.date  = DTATESTADO,
-                        accident.type     = CIRCOBITO,
-                        work.accident     = ACIDTRAB,
-                        source            = FONTE,
-                        investigated      = TPPOS,
-                        investig.date     = DTINVESTIG,
-                        orig.cause        = CAUSABAS_O,
-                        input.date        = DTCADASTRO,
-                        cert.officer      = ATESTANTE,
-                        investig.source   = FONTEINV,
-                        receipt.date      = DTRECEBIM,
-                        inst.code         = CODINST
-                ) %>% 
-                # Select only those names that were translated (CodeBook is not available for the other fiels
-                # in the original documentation)
-                select(-matches("[A-Z]+", ignore.case = FALSE))
+        # Returns mortality data
+        mort
 }
