@@ -2,4 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-README.html
+*.html
+*.dbc
+*.dbf
+*.csv
+*.xml
+*.txt

@@ -18,7 +18,7 @@ datasus.init <- function() {
                 datasus$mortality       <- "SIM"
                 
                 # Local Workspace
-                datasus$workdir <- path.expand("~/datasus/data")
+                datasus$workdir <- path.expand("~/Rdatasus/data")
                 datasus$tempdir <- tempdir()
                 
                 message("DATASUS environment variables loaded successfuly")

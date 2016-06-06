@@ -6,7 +6,15 @@ License: GPLv3
 
 # SIM: Mortality Information System (Sistema de Informações de Mortalidade)
 
-File name format: DOxxyyyy.dbc
+## File types
+
+DO: Declarations of death
+DOFET: Declarations of death (Fetal)
+DOEXT: Declarations of death (External Causes)
+DOINF: Declarations of death (Children)
+DOMAT: Declarations of death (Mother)
+
+## SIM Code Book
 
 | Column Name    | Original Name | Description                             
 |----------------|---------------|-----------------------------------------
@@ -67,3 +75,4 @@ File name format: DOxxyyyy.dbc
 ## References
 
 1. https://en.wikipedia.org/wiki/Pardo_Brazilians
+2. ftp://ftp.datasus.gov.br/dissemin/publicos/SIM/CID10/DOCS/Estrutura_SIM_para_CD.pdf

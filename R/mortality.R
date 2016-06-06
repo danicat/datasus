@@ -4,6 +4,16 @@
 # Jun, 3 2016
 
 datasus.mortality <- function(year, type = "DO", states = "ALL") {
+        # Current version not prepared to handle several years at a time
+        if( length(year) > 1 ) {
+                warning("Please specify only one year at a time.")
+                stop()                
+        }
+        
+        if( states != "ALL" & type != "DO" ) {
+                warning("Parameter 'states' ignored: valid only for 'DO' type.")
+        }
+        
         all_states <- datasus.states() %>% select(state)
         
         # Validate Input
@@ -19,11 +29,47 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
         else
                 cid <- "CID10"
         
-        # if( type == "DO" )
-        type.path   <- "DORES"
-        file.prefix <- "DO"
-        
-        file.name  <- paste0(file.prefix, sel_states, year, ".dbc")
+        # DO: declarations of death
+        if( type == "DO" ) {
+                type.path     <- "DORES"
+                file.prefix   <- "DO"
+                year.mask     <- "%Y"
+                states.prefix <- sel_states
+        }
+        # DOFET: declarations of death (fetal)
+        else if( type == "DOFET" ) {
+                type.path     <- "DOFET"
+                file.prefix   <- "DOFET"                
+                year.mask     <- "%y"
+                states.prefix <- ""
+        }
+        # DOEX: declarations of death (external causes)
+        else if( type == "DOEXT" ) {
+                type.path     <- "DOFET" # same as above, not a bug!
+                file.prefix   <- "DOEXT"
+                year.mask     <- "%y"
+                states.prefix <- ""
+        }
+        # DOINF: declarations of death (children)
+        else if( type == "DOINF" ) {
+                type.path     <- "DOFET" # same as above, not a bug!
+                file.prefix   <- "DOINF"
+                year.mask     <- "%y"
+                states.prefix <- ""
+        }
+        # DOMAT: declarations of death (mother)
+        else if( type == "DOMAT") {
+                type.path     <- "DOFET" # same as above, not a bug!
+                file.prefix   <- "DOMAT"
+                year.mask     <- "%y"
+                states.prefix <- ""
+        }
+        else {
+                warning("Invalid file type specified. Valid types: 'DO', 'DOFET'")
+                stop()
+        }
+                
+        file.name  <- paste0(file.prefix, states.prefix, strftime(paste0(year,"-01-01"), format = year.mask), ".dbc")
         local.name <- file.path(datasus$workdir, file.name)
         
         url.base   <- paste(datasus$base_url, datasus$mortality, cid, type.path, sep = "/" )
@@ -45,39 +91,43 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
         mort <- data.frame()
         for(i in 1:length(local.name)) {
                 df <-read.dbc(local.name[i], as.is = TRUE)
-                df$state <- sel_states[i]
+                
+                # This column is used as an indicator of which file originated the data
+                df$dataset <- file.name[i]
+                
                 mort <- rbind(df, mort, make.row.names = FALSE)
         }
-        mort %>% rename(dec.death.id      = NUMERODO,  # Declaration of Death #
-                        type              = TIPOBITO,  # Type of death 1 = fetal / 2 = non fetal
-                        date              = DTOBITO,   # ddmmyyyy
-                        time              = HORAOBITO, # hhmm
-                        birthplace        = NATURAL,   # country code or the number 8 followed by state code if local
-                        birthdate         = DTNASC,    # ddmmyyyy
-                        age               = IDADE,     # first digit: age type
+        
+        # Translate variable names to English
+        # See CodeBook.md for variable descriptions and values
+        mort %>% rename(dec.death.id      = NUMERODO,
+                        type              = TIPOBITO,
+                        date              = DTOBITO,
+                        time              = HORAOBITO,
+                        birthplace        = NATURAL,
+                        birthdate         = DTNASC,
+                        age               = IDADE,
                         sex               = SEXO,
                         race              = RACACOR,
                         marital.status    = ESTCIV,
                         education         = ESC,
                         occupation        = OCUP,
-                        county.res.id     = CODMUNRES, # county of residency
-                        #nb.res.id         = CODBAIRES, # neighborhood of residency
+                        county.res.id     = CODMUNRES,
+                        #nb.res.id         = CODBAIRES,
                         local.of.death    = LOCOCOR,
-                        facility.id       = CODESTAB,  # establishment of death
-                        cty.death.id      = CODMUNOCOR, # county where he/she died
-                        #nb.death.id       = CODBAIOCOR, # neighborhood where he/she died
-                        # Fields below only filled when fetal death or < than 1 year old
-                        age.mother        = IDADEMAE, # age of the mother
-                        educ.mother       = ESCMAE, # education of the mother
+                        facility.id       = CODESTAB,
+                        cty.death.id      = CODMUNOCOR,
+                        age.mother        = IDADEMAE,
+                        educ.mother       = ESCMAE,
                         occup.mother      = OCUPMAE,
-                        num.chld.alive   = QTDFILVIVO,
-                        num.chld.dead    = QTDFILMORT,
+                        num.chld.alive    = QTDFILVIVO,
+                        num.chld.dead     = QTDFILMORT,
                         pregnancy         = GRAVIDEZ,
                         gestation         = GESTACAO,
                         child.birth       = PARTO,
-                        childbirth.time = OBITOPARTO, # Timing of death in relation to child-birth
+                        childbirth.time   = OBITOPARTO,
                         weight            = PESO,
-                        birth.cert.id     = NUMERODN, # birth certificate #
+                        birth.cert.id     = NUMERODN,
                         pregnancy.death   = OBITOGRAV,
                         puerperium.death  = OBITOPUERP,
                         med.assist        = ASSISTMED,
@@ -88,9 +138,8 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
                         line.b            = LINHAB,
                         line.c            = LINHAC,
                         line.d            = LINHAD,
-                        line.II           = LINHAII,
-                        cause.of.death    = CAUSABAS, # By CID-10
-                        #signature.type    = TPASSINA,
+                        line.ii           = LINHAII,
+                        cause.of.death    = CAUSABAS,
                         certificate.date  = DTATESTADO,
                         accident.type     = CIRCOBITO,
                         work.accident     = ACIDTRAB,
@@ -102,8 +151,9 @@ datasus.mortality <- function(year, type = "DO", states = "ALL") {
                         cert.officer      = ATESTANTE,
                         investig.source   = FONTEINV,
                         receipt.date      = DTRECEBIM,
-                        #registry.state    = UFINFORM,
                         inst.code         = CODINST
-                        #cause.death.pre   = CB_PRE
-                        )
+                ) %>% 
+                # Select only those names that were translated (CodeBook is not available for the other fiels
+                # in the original documentation)
+                select(-matches("[A-Z]+", ignore.case = FALSE))
 }
