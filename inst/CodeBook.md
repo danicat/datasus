@@ -51,12 +51,12 @@ DOMAT: Declarations of death (Mother)
 | comp.exams     | EXAME         | Complimentary exams were performed: 1=yes, 2=no, 9=ignored
 | surgery        | CIRURGIA      | Surgery was done: 1=yes, 2=no, 9=ignored
 | necropsy       | NECROPSIA     | Necropsy was done: 1=yes, 2=no, 9=ignored
-| line.a         | LINHAA        | Line A of the death certificate, according to CID-10
-| line.b         | LINHAB        | Line B of the death certificate, according to CID-10
-| line.c         | LINHAC        | Line C of the death certificate, according to CID-10
-| line.d         | LINHAD        | Line D of the death certificate, according to CID-10
-| line.II        | LINHAII       | Line II of the death certificate, according to CID-10
-| cause.of.death | CAUSABAS      | Main cause of death, according to CID-10
+| line.a         | LINHAA        | Line A of the death certificate, according to ICD-10
+| line.b         | LINHAB        | Line B of the death certificate, according to ICD-10
+| line.c         | LINHAC        | Line C of the death certificate, according to ICD-10
+| line.d         | LINHAD        | Line D of the death certificate, according to ICD-10
+| line.II        | LINHAII       | Line II of the death certificate, according to ICD-10
+| cause.of.death | CAUSABAS      | Main cause of death, according to ICD-10
 | death.cert.dt  | DTATESTADO    | Date of the death certificate
 | accident.type  | CIRCOBITO     | Type of accident (if applicable): 1=accident, 2=suicide, 3=homicide, 4=others, 5=ignored
 | work.accident  | ACIDTRAB      | 1=yes, 2=no, 9=ignored
