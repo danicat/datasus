@@ -1,0 +1,11 @@
+Package: datasus
+Title: An Interface for the Brazilian Public Healthcare Datasets (DATASUS)
+Version: 0.1
+Authors@R: person("Daniela", "Petruzalek", email = "daniela.petruzalek@gmail.com", role = c("aut", "cre"))
+Description: This package is a collection of helper functions that allows quick access to the data made available by the Brazilian Ministry of Health about the Public Healthcare in Brazil.
+Depends:
+    R (>= 3.3.1), read.dbc (>= 1.0.4)
+License: AGPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 5.0.1
