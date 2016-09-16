@@ -4,10 +4,12 @@
 \alias{datasus.init}
 \title{Initialize DATASUS environment}
 \usage{
-datasus.init(workdir = tempdir())
+datasus.init(workdir = tempdir(), language = "en")
 }
 \arguments{
-\item{workdir}{The local directory where to store de downloaded data. Defaults to \code{tempdir()}.}
+\item{workdir}{character. The local directory where to store de downloaded data. Defaults to \code{tempdir()}.}
+
+\item{language}{character. Selects the default language for column names. Valid values are: "en" for English and "pt" for Portuguese. Defaults to English.}
 }
 \value{
 nothing

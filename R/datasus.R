@@ -27,7 +27,8 @@
 #' DATASUS is the name of the Department of Informatics of the Brazilian Unified Health System (SUS) and is resposible for publishing public healthcare data. Besides the DATASUS, the Brazilian National Agency for Supplementary Health (ANS) also uses this file format for its public data. The name DATASUS is also often used to represent the public datasets they provide.
 #'
 #' Neither this project, nor its author, has any association with the brazilian government.
-#' @param workdir The local directory where to store de downloaded data. Defaults to \code{tempdir()}.
+#' @param workdir  character. The local directory where to store de downloaded data. Defaults to \code{tempdir()}.
+#' @param language character. Selects the default language for column names. Valid values are: "en" for English and "pt" for Portuguese. Defaults to English.
 #' @return nothing
 #' @keywords datasus
 #' @export
@@ -36,11 +37,18 @@
 #' @examples
 #'
 #' datasus.init("~/datasus")
-datasus.init <- function(workdir = tempdir()) {
+datasus.init <- function(workdir = tempdir(), language = "en") {
+    # Validate parameters
+    if( !(language %in% c("en","pt")) )
+        stop("Invalid language.")
+    
     # Create environment to store parameters
     if( !exists("datasus.env") ) {
         datasus.env <<- new.env()
     }
+    
+    # Language used for column names
+    datasus.env$language      <- language 
     
     # Service URLs
     datasus.env$base_url      <- "ftp://ftp.datasus.gov.br/dissemin/publicos"
@@ -63,16 +71,21 @@ datasus.init <- function(workdir = tempdir()) {
     datasus.env$SIM.DOMAT_dir <- file.path(datasus.env$SIM_dir, "DOMAT")
     datasus.env$CNES_dir      <- file.path(datasus.env$workdir, "CNES")
     
+    create.if.not.exists <- function(path, ...) {
+        if( !dir.exists(path) )
+            dir.create(path, ...)
+    }
+    
     # Create local directory structure
-    dir.create(datasus.env$workdir, recursive = TRUE)
-    dir.create(datasus.env$territory_dir)
-    dir.create(datasus.env$SIM_dir)
-    dir.create(datasus.env$SIM.DORES_dir)
-    dir.create(datasus.env$SIM.DOFET_dir)
-    dir.create(datasus.env$SIM.DOEXT_dir)
-    dir.create(datasus.env$SIM.DOINF_dir)
-    dir.create(datasus.env$SIM.DOMAT_dir)
-    dir.create(datasus.env$CNES_dir)
+    create.if.not.exists(datasus.env$workdir, recursive = TRUE)
+    create.if.not.exists(datasus.env$territory_dir)
+    create.if.not.exists(datasus.env$SIM_dir)
+    create.if.not.exists(datasus.env$SIM.DORES_dir)
+    create.if.not.exists(datasus.env$SIM.DOFET_dir)
+    create.if.not.exists(datasus.env$SIM.DOEXT_dir)
+    create.if.not.exists(datasus.env$SIM.DOINF_dir)
+    create.if.not.exists(datasus.env$SIM.DOMAT_dir)
+    create.if.not.exists(datasus.env$CNES_dir)
 
     # Misc
     datasus.env$br.uf <- c('AC', 'AL', 'AP', 'AM',
