@@ -15,7 +15,7 @@ datasus.init(workdir = tempdir(), language = "en")
 nothing
 }
 \description{
-This function initializes the environment that contains the DATASUS package control variables, like the locations for the DATASUS ftp and the local working directory.
+\code{datasus.init} initializes the environment that contains the DATASUS package control variables, like the locations for the DATASUS ftp and the local working directory.
 }
 \details{
 This function prepares the \code{datasus.env} environment. You can specify the DATASUS working directory with the parameter \code{workdir} to set the local directory where to store the downloaded DATASUS files.

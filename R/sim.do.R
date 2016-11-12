@@ -1,22 +1,22 @@
-# sim.domat.R 
+# sim.do.R 
 # Copyright (C) 2016 Daniela Petruzalek
 #
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as published
-# by the Free Software Foundation, either version 3 of the License, or
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-#
+# 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' Provides Access to the Declarations of Death (Children) Dataset from the Mortality Information System (SIM).
+#' Provides Access to the Declarations of Death Dataset from the Mortality Information System (SIM).
 #'
-#' \code{sim.domat} returns a data.frame with a subset of the Declarations of Death - Maternal (DOMAT) dataset
+#' \code{sim.do} returns a data.frame with a subset of the Declarations of Death (DO) dataset
 #' 
 #' @details
 #' The Mortality Information System (SIM) offers health managers, researchers and institutions highly relevant information for defining priorities for disease prevention and control programmes, based on death statement information collected by the State Health Departments. The national Database generated from this information is administered by the Health Surveillance Secretariat in cooperation with DATASUS.
@@ -26,7 +26,7 @@
 #' This system contains data divided in the following categories:
 #' 
 #' \itemize{
-#'  \item DO: Declarations of death  
+#'  \item DO: Declarations of death (sometimes referenced as DORES)
 #'  \item DOFET: Declarations of death (Fetal)  
 #'  \item DOEXT: Declarations of death (External Causes)  
 #'  \item DOINF: Declarations of death (Children)  
@@ -40,6 +40,7 @@
 #'
 #' Neither this project, nor its author, has any association with the brazilian government.
 #' @param years  numeric; one or more years representing the data to be read
+#' @param states character; one or more state (UF) representing the location of the data to be read, or 'ALL' if you want to read data from all states (UFs) at the same time.
 #' @param language character; column names in Portuguese ("pt") or English ("en"). Default is "en".
 #' @return a data.frame with Brazil's mortality data
 #' @keywords datasus
@@ -48,7 +49,7 @@
 #' @seealso \code{\link{datasus.init}} \code{\link{read.dbc}}
 #' @examples
 #'
-#' pr10 <- sim.domat(2010)
-sim.domat <- function(years, language = datasus.lang()) {
-    sim.load("DOMAT", years, language = language)
+#' pr10 <- sim.dores(2010, 'PR')
+sim.do <- function(years, states, language = datasus.lang()) {
+    sim.load("DO", years, language = language)
 }

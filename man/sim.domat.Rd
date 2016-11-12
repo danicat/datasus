@@ -4,12 +4,12 @@
 \alias{sim.domat}
 \title{Provides Access to the Declarations of Death (Children) Dataset from the Mortality Information System (SIM).}
 \usage{
-sim.domat(years, english = TRUE)
+sim.domat(years, language = datasus.lang())
 }
 \arguments{
 \item{years}{numeric; one or more years representing the data to be read}
 
-\item{english}{logical; translates column names from Portuguese (Brazil) to English. Default is TRUE.}
+\item{language}{character; column names in Portuguese ("pt") or English ("en"). Default is "en".}
 }
 \value{
 a data.frame with Brazil's mortality data
