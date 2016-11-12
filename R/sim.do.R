@@ -51,5 +51,5 @@
 #'
 #' pr10 <- sim.dores(2010, 'PR')
 sim.do <- function(years, states, language = datasus.lang()) {
-    sim.load("DO", years, language = language)
+    sim.load("DO", years, states, language = language)
 }
