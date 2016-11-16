@@ -48,8 +48,18 @@ The working directory is a local folder on your machine that will store all down
 
 If you call `datasus.init` without specifying a working directory it will use a `tempdir()`. While this behaviour is ok for simple tests it is not advisable for anything other than that by the reasons stated above.
 
-## Examples
+## Available Functions
 
+### Mortality Information System (SIM)
+
+1. `sim.load`: general loading function for the SIM subsystem
+2. `sim.do`: loads Declaration of Death data
+3. `sim.dofet`: loads Declaration of Death (fetal) data
+4. `sim.doinf`: loads Declaration of Death (infant/children) data
+5. `sim.domat`: loads Declaration of Death (maternal) data
+6. `sim.doext`: loads Declaration of Death (external causes) data
+
+## Examples
 
     # Always initialize the package with the local working directory before calling any other function
     > datasus.init('~/datasus/data')

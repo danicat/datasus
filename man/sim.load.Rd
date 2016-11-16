@@ -4,7 +4,8 @@
 \alias{sim.load}
 \title{Provides Access to the Declarations of Death (Children) Dataset from the Mortality Information System (SIM).}
 \usage{
-sim.load(types, years, states = "", language = datasus.lang())
+sim.load(types, years, states = "", language = datasus.lang(),
+  fields = NA)
 }
 \arguments{
 \item{types}{character; an array with any combination of the supported types: DO, DOFET, DOINF, DOMAT, DOEXT.}
@@ -45,7 +46,15 @@ Neither this project, nor its author, has any association with the brazilian gov
 }
 \examples{
 
-pr10 <- sim.domat(2010)
+# Loads Maternal Deaths for 2010
+domat10 <- sim.load('DOMAT', 2010)
+
+# Loads Fetal Deaths for 2012
+dofet12 <- sim.load('DOFET', 2012)
+
+# Loads Fetal and Infant Deaths for 2010 with ALL fields selected (field naming only available in Portuguese)
+do2010  <- sim.load(c('DOFET','DOINF'), 2010, fields = 'ALL')
+
 }
 \author{
 Daniela Petruzalek, \email{daniela.petruzalek@gmail.com}

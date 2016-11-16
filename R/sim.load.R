@@ -50,8 +50,16 @@
 #' @seealso \code{\link{datasus.init}} \code{\link{read.dbc}}
 #' @examples
 #'
-#' pr10 <- sim.domat(2010)
-sim.load <- function(types, years, states = "", language = datasus.lang()) {
+#' # Loads Maternal Deaths for 2010
+#' domat10 <- sim.load('DOMAT', 2010)
+#' 
+#' # Loads Fetal Deaths for 2012
+#' dofet12 <- sim.load('DOFET', 2012)
+#' 
+#' # Loads Fetal and Infant Deaths for 2010 with ALL fields selected (field naming only available in Portuguese)
+#' do2010  <- sim.load(c('DOFET','DOINF'), 2010, fields = 'ALL')
+#' 
+sim.load <- function(types, years, states = "", language = datasus.lang(), fields = NA) {
     # Check if environment is loaded        
     if( !exists("datasus.env") ) {
         stop("DATASUS environment not loaded. Please call datasus.init")
@@ -68,124 +76,51 @@ sim.load <- function(types, years, states = "", language = datasus.lang()) {
         stop("Invalid 'types' input.")
         
     suppressWarnings(
-    if( 'DO' %in% sel_types || 'DORES' %in% sel_types)
+    if( any(c("DO", "DORES") %in% sel_types) )
         if( states == "ALL")
             sel_states <- datasus.env$br.uf
         else
             sel_states <- states[states %in% datasus.env$br.uf]
     )
      
-    if( ("DO" %in% sel_types || "DORES" %in% sel_types) && length(sel_states) == 0 )
+    if( any(c("DO", "DORES") %in% sel_types) && length(sel_states) == 0 )
         stop("Invalid 'states' input.")
 
     # Select which fields of the files will be loaded
-    fields     <- c('NUMERODO',
-                    'TIPOBITO',
-                    'DTOBITO',
-                    'HORAOBITO',
-                    'NATURAL',
-                    'DTNASC',
-                    'IDADE',
-                    'SEXO',
-                    'RACACOR',
-                    'ESTCIV',
-                    'ESC',
-                    'OCUP',
-                    'CODMUNRES',
-                    'LOCOCOR',
-                    'CODESTAB',
-                    'CODMUNOCOR',
-                    'IDADEMAE',
-                    'ESCMAE',
-                    'OCUPMAE',
-                    'QTDFILVIVO',
-                    'QTDFILMORT',
-                    'GRAVIDEZ',
-                    'GESTACAO',
-                    'PARTO',
-                    'OBITOPARTO',
-                    'PESO',
-                    'NUMERODN',
-                    'OBITOGRAV',
-                    'OBITOPUERP',
-                    'ASSISTMED',
-                    'EXAME',
-                    'CIRURGIA',
-                    'NECROPSIA',
-                    'LINHAA',
-                    'LINHAB',
-                    'LINHAC',
-                    'LINHAD',
-                    'LINHAII',
-                    'CAUSABAS',
-                    'DTATESTADO',
-                    'CIRCOBITO',
-                    'ACIDTRAB',
-                    'FONTE',
-                    'TPPOS',
-                    'DTINVESTIG',
-                    'CAUSABAS_O',
-                    'DTCADASTRO',
-                    'ATESTANTE',
-                    'FONTEINV',
-                    'DTRECEBIM',
-                    'CODINST'
-    )
+    if( is.na(fields) ) {
+        if( any(c("DOFET", "DOMAT", "DOINF") %in% sel_types) ) {
+            # This is a temporary fix for file incompatibilities
+            fields.ptb <- setdiff(datasus.env$SIM.fields.pt, c('HORAOBITO',
+                                                              'CODESTAB',
+                                                              'NUMERODN',
+                                                              'DTATESTADO',
+                                                              'TPPOS',
+                                                              'DTINVESTIG',
+                                                              'CAUSABAS_O',
+                                                              'DTCADASTRO',
+                                                              'ATESTANTE',
+                                                              'FONTEINV',
+                                                              'DTRECEBIM',
+                                                              'CODINST',
+                                                              'OBITOGRAV',
+                                                              'OBITOPUERP')
+                                 )
+            fields.eng <- datasus.env$SIM.fields.en[ datasus.env$SIM.fields.pt %in% fields.ptb ]
+        }
+        else {
+            fields.ptb <- datasus.env$SIM.fields.pt
+            fields.eng <- datasus.env$SIM.fields.en
+        }
+    }
+    else if( fields == 'ALL' ) {
+        fields.ptb <- NA
+        language   <- "pt" # currently not all columns have translations
+    }
+    else {
+        fields.ptb <- datasus.env$SIM.fields.pt[ fields ]
+        fields.eng <- datasus.env$SIM.fields.en[ fields ]
+    }
     
-    # English translations. See CodeBook.md for variable descriptions and values
-    fields.eng <- c('death.id',
-                    'type',
-                    'date',
-                    'time',
-                    'birthplace',
-                    'birthdate',
-                    'age',
-                    'sex',
-                    'race',
-                    'marital.status',
-                    'education',
-                    'occupation',
-                    'residency.county.id',
-                    'death.place',
-                    'facility.id',
-                    'death.county.id',
-                    'mother.age',
-                    'mother.education',
-                    'mother.occupation',
-                    'num.alive.child',
-                    'num.dead.child',
-                    'pregnancy',
-                    'gestation',
-                    'childbirth',
-                    'childbirth.death',
-                    'weight',
-                    'birth.cert.id',
-                    'pregnancy.death',
-                    'puerperium.death',
-                    'medical.assistance',
-                    'complimentary.exams',
-                    'surgery',
-                    'necropsy',
-                    'line.a',
-                    'line.b',
-                    'line.c',
-                    'line.d',
-                    'line.ii',
-                    'cause.of.death',
-                    'certificate.date',
-                    'accident.type',
-                    'work.accident',
-                    'source',
-                    'investigated',
-                    'investig.date',
-                    'orig.cause',
-                    'input.date',
-                    'cert.officer',
-                    'investig.source',
-                    'receipt.date',
-                    'inst.code'
-    )
-
     sim <- data.frame()
     
     for(t in sel_types) {
@@ -239,9 +174,10 @@ sim.load <- function(types, years, states = "", language = datasus.lang()) {
             # Load downloaded files into a data.frame
             for(i in 1:length(localnames)) {
                 df <- read.dbc::read.dbc(localnames[i], as.is = TRUE)
-                
+
                 # Select only applicable fields
-                df <- df[, fields]
+                if( !is.na(fields.ptb) )
+                    df <- df[, fields.ptb]
                 
                 # This column is used as an indicator of which file originated the data
                 df$dataset <- filenames[i]
