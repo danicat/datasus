@@ -163,7 +163,7 @@ sim.load <- function(types, years, states = "", language = datasus.lang(), field
                     # Try default path
                     url <- paste(url.base, filenames[i], sep = "/" )
                     
-                    if( download.file(url, destfile = localnames[i]) ) {
+                    if( download.file(url, destfile = localnames[i], mode = "wb") ) {
                         # Some of the files are postfixed as .DBC (uppercase), try again on error
                         url <- paste(url.base, toupper(filenames[i]), sep = "/" )
                         download.file(url, destfile = localnames[i], mode = "wb")
@@ -176,8 +176,10 @@ sim.load <- function(types, years, states = "", language = datasus.lang(), field
                 df <- read.dbc::read.dbc(localnames[i], as.is = TRUE)
 
                 # Select only applicable fields
+                suppressWarnings(
                 if( !is.na(fields.ptb) )
                     df <- df[, fields.ptb]
+                )
                 
                 # This column is used as an indicator of which file originated the data
                 df$dataset <- filenames[i]
