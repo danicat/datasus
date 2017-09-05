@@ -126,13 +126,15 @@ sim.load <- function(types, years, states = "", language = datasus.lang(), field
     for(t in sel_types) {
         for(i in years) {
             # Prepare local file names and remote download paths
-            if( i < 1996 )
+            if( i < 1996 ){
                 cid <- "CID9"
-            else
+                filenames  <- paste0("DOR", sel_states, strftime(paste0(i,"-01-01"), format = "%y"), ".dbc")
+            }
+            else {
                 cid <- "CID10"
-            
-            if( t == "DO" || t == "DORES" ) {
                 filenames  <- paste0("DO", sel_states, strftime(paste0(i,"-01-01"), format = "%Y"), ".dbc")
+            }
+            if( t == "DO" || t == "DORES" ) {
                 localnames <- file.path(datasus.env$SIM.DORES_dir, filenames)
                 url.base   <- paste(datasus.env$SIM_url, cid, "DORES", sep = "/" )
             } 
